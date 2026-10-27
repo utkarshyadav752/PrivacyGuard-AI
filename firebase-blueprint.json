@@ -1,0 +1,116 @@
+{
+  "entities": {
+    "AuditRecord": {
+      "title": "AuditRecord",
+      "description": "A sanitized, privacy-preserving summary of a completed photo protection or link cleaning action synced by an authenticated user.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the authenticated user who owns this audit record.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "actionType": {
+          "type": "string",
+          "description": "Type of privacy action performed.",
+          "enum": ["photo_protect", "link_clean", "batch_protect", "ai_placeholder"]
+        },
+        "summary": {
+          "type": "string",
+          "description": "Sanitized human-readable summary containing zero raw PII or GPS coordinates.",
+          "minLength": 1,
+          "maxLength": 280
+        },
+        "riskLevel": {
+          "type": "string",
+          "description": "Assessed risk rubric level before sanitization.",
+          "enum": ["Low", "Moderate", "High"]
+        },
+        "itemsRemovedCount": {
+          "type": "integer",
+          "description": "Count of metadata fields, visual redactions, or tracking parameters removed."
+        },
+        "verifiedLocal": {
+          "type": "boolean",
+          "description": "Whether the output was verified locally on the user device."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the audit record was stored."
+        }
+      },
+      "required": [
+        "ownerId",
+        "actionType",
+        "summary",
+        "riskLevel",
+        "itemsRemovedCount",
+        "verifiedLocal",
+        "createdAt"
+      ]
+    },
+    "UserPreference": {
+      "title": "UserPreference",
+      "description": "User-specific non-PII privacy preferences and checklist defaults.",
+      "type": "object",
+      "properties": {
+        "ownerId": {
+          "type": "string",
+          "description": "UID of the authenticated user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "theme": {
+          "type": "string",
+          "description": "UI appearance mode.",
+          "enum": ["dark", "light", "system"]
+        },
+        "language": {
+          "type": "string",
+          "description": "Interface language code.",
+          "enum": ["en", "hi"]
+        },
+        "historyEnabled": {
+          "type": "boolean",
+          "description": "Whether local and cloud audit history is enabled."
+        },
+        "defaultExportFormat": {
+          "type": "string",
+          "description": "Preferred output image format.",
+          "enum": ["image/jpeg", "image/png", "image/webp"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the last preference update."
+        }
+      },
+      "required": [
+        "ownerId",
+        "theme",
+        "language",
+        "historyEnabled",
+        "defaultExportFormat",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/auditLogs/{logId}": {
+      "schema": {
+        "$ref": "#/entities/AuditRecord"
+      },
+      "description": "Stores sanitized privacy operation audit logs scoped strictly to the owner user."
+    },
+    "/users/{userId}/preferences/{prefId}": {
+      "schema": {
+        "$ref": "#/entities/UserPreference"
+      },
+      "description": "Stores user non-PII settings and export preferences."
+    }
+  }
+}

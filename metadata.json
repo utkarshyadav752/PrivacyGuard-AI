@@ -1,0 +1,6 @@
+{
+  "name": "PrivacyGuard AI",
+  "description": "Offline-first personal privacy protection utility to inspect and strip hidden photo metadata, redact sensitive faces/plates/text locally, and sanitize tracking links before sharing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
